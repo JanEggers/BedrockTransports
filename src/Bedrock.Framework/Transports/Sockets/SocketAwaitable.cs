@@ -10,12 +10,13 @@ using System.Threading.Tasks;
 
 namespace Bedrock.Framework
 {
-    internal class SocketAwaitable : ICriticalNotifyCompletion
+    internal class SocketAwaitable : ICriticalNotifyCompletion, IThreadPoolWorkItem
     {
         private static readonly Action _callbackCompleted = () => { };
 
         private readonly PipeScheduler _ioScheduler;
 
+        private Action _continue;
         private Action _callback;
         private int _bytesTransferred;
         private SocketError _error;
@@ -66,6 +67,11 @@ namespace Bedrock.Framework
             {
                 _ioScheduler.Schedule(state => ((Action)state)(), continuation);
             }
+        }
+
+        void IThreadPoolWorkItem.Execute()
+        {
+            _continue();
         }
     }
 }

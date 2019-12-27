@@ -26,8 +26,8 @@ namespace Bedrock.Framework
             _socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
             _endPoint = endPoint;
 
-            _sender = new SocketSender(_socket, PipeScheduler.ThreadPool);
-            _receiver = new SocketReceiver(_socket, PipeScheduler.ThreadPool);
+            _sender = new SocketSender(_socket, new NonAllocThreadpoolScheduler());
+            _receiver = new SocketReceiver(_socket, new NonAllocThreadpoolScheduler());
 
             // Add IConnectionInherentKeepAliveFeature to the tcp connection impl since Kestrel doesn't implement
             // the IConnectionHeartbeatFeature
